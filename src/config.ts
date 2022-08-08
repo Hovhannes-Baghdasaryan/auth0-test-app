@@ -5,5 +5,5 @@ export const AUTH0_REALM = "Username-Password-Authentication";
 export const AUTH0_USER_SCOPE = "openid email profile";
 
 export const AUTH0_LOGIN_RESPONSE_TYPE = "token";
-export const AUTH0_LOGOUT_URI = "react-auth0-app.herokuapp.com/";
-export const AUTH0_LOGIN_REDIRECT_URI = "react-auth0-app.herokuapp.com/authenticate";
+export const AUTH0_LOGOUT_URI = "https://react-auth0-app.herokuapp.com";
+export const AUTH0_LOGIN_REDIRECT_URI = "https://react-auth0-app.herokuapp.com/authenticate";
