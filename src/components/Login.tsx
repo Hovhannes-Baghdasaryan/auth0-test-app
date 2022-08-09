@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
+// auth0
 import { Auth0Error } from "auth0-js";
 import { auth } from "../services/auth0.service";
 import { AUTH0_LOGIN_REDIRECT_URI, AUTH0_REALM, AUTH0_LOGIN_RESPONSE_TYPE } from "./../config";
@@ -11,6 +14,7 @@ interface LoginFormType {
 
 const Login: React.FC = () => {
 	const [user, setFormState] = useState<LoginFormType>({ email: "", password: "" });
+	const navigate = useNavigate();
 
 	const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormState({
@@ -38,8 +42,8 @@ const Login: React.FC = () => {
 					return;
 				}
 
-				alert("Login Successfull");
 				console.log(result);
+				alert("Login Successful");
 			}
 		);
 	};
@@ -48,7 +52,7 @@ const Login: React.FC = () => {
 		<div style={{ display: "flex", flexFlow: "column", width: 300, alignItems: "center", margin: "0 auto", gap: 20 }}>
 			<div>
 				<h1>Login</h1>
-				<p>Sign IN To Application</p>
+				<p>Sign In To Application</p>
 			</div>
 			<form style={{ display: "flex", flexFlow: "column", gap: 20, alignItems: "center" }}>
 				<input name="email" type="email" placeholder="write email" value={user.email} onChange={changeHandler} />
@@ -56,6 +60,7 @@ const Login: React.FC = () => {
 				<button type="button" onClick={onSubmit}>
 					Login
 				</button>
+				<button onClick={() => navigate("/register")}>Don't Have An Account?</button>
 			</form>
 		</div>
 	);

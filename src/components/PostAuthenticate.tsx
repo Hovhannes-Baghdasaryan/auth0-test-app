@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-import { Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { auth } from "../services/auth0.service";
 import { Auth0DecodedHash, Auth0Error, Auth0ParseHashError, Auth0UserProfile } from "auth0-js";
 import { AUTH0_CLIENT_ID } from "../config";
 
+// store import
+import { useDispatch, useSelector } from "react-redux";
+
+// action creators import
+import { clearCredentials, setCredentials } from "../services/auth/authReducer";
+
 const PostAuthenticate: React.FC = () => {
 	const location = useLocation();
-	const [user, setUser] = useState<Auth0UserProfile>();
 
-	const token = localStorage.getItem("token");
+	const { user } = useSelector((state: any) => state.auth);
+	const dispatch = useDispatch();
 
 	const processHash = (hash: string) => {
 		auth.parseHash(
@@ -33,8 +39,6 @@ const PostAuthenticate: React.FC = () => {
                     */
 
 					if (accessToken) {
-						localStorage.setItem("token", accessToken);
-
 						auth.client.userInfo(accessToken, (error: Auth0Error | null, result: Auth0UserProfile) => {
 							if (error) {
 								alert("Something went wrong in fetching user profile");
@@ -42,9 +46,8 @@ const PostAuthenticate: React.FC = () => {
 								return;
 							}
 
+							dispatch(setCredentials(result, accessToken));
 							alert("User Login Successfull");
-							console.log(result);
-							setUser(result);
 						});
 					}
 				}
@@ -53,32 +56,30 @@ const PostAuthenticate: React.FC = () => {
 	};
 
 	const LogoutCallback = () => {
+		dispatch(clearCredentials());
+
 		auth.logout({
-			returnTo: "/login",
+			returnTo: "http://localhost:3000/login",
 			clientID: AUTH0_CLIENT_ID,
 		});
 	};
 
+	console.log(user);
+
 	// adding dependancy for the location
 	useEffect(() => {
-		if (location.hash) {
+		if (location.hash && !user) {
 			processHash(location.hash);
 		}
-	}, [location]);
-
-	if (!token) return <Navigate to="/login" />;
+	}, [location, user]);
 
 	return (
 		<>
-			{token && (
-				<>
-					<img alt="" src={user?.picture} />
-					<h1>{user?.email}</h1>
-					<p>{user?.created_at}</p>
-					<p>{user?.nickname}</p>
-					<button onClick={LogoutCallback}>Logout</button>
-				</>
-			)}
+			<img alt="" src={user?.picture} />
+			<h1>{user?.email}</h1>
+			<p>{user?.created_at}</p>
+			<p>{user?.nickname}</p>
+			<button onClick={LogoutCallback}>Logout</button>
 		</>
 	);
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 // component import
 import PostAuthenticate from "./components/PostAuthenticate";
@@ -6,24 +6,42 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 
 // router import
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
+
+// store import
+import store from "./app/store";
+import { Provider, useSelector } from "react-redux";
 
 const App: React.FC = () => {
-	const token = localStorage.getItem("token");
+	const { token } = useSelector((state: any) => state.auth);
+
+	console.log(token);
 
 	return (
 		<Routes>
 			<Route path="authenticate" caseSensitive={true} element={<PostAuthenticate />} />
-			<Route path="register" caseSensitive={true} element={<Register />} />
-			<Route path="login" caseSensitive={true} element={<Login />} />
+			{token ? (
+				<>
+					<Route path="" element={<Navigate to="/authenticate" />} />
+					<Route path="*" element={<div>Not Found</div>} />
+				</>
+			) : (
+				<>
+					<Route path="register" element={<Register />} />
+					<Route path="login" element={<Login />} />
+					<Route path="*" element={<Navigate to="/login" />} />
+				</>
+			)}
 		</Routes>
 	);
 };
 
 const AppWrapper = () => (
-	<BrowserRouter>
-		<App />
-	</BrowserRouter>
+	<Provider store={store}>
+		<BrowserRouter>
+			<App />
+		</BrowserRouter>
+	</Provider>
 );
 
 export default AppWrapper;

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Auth0Error } from "auth0-js";
 import { AUTH0_REALM } from "../config";
 import { auth } from "../services/auth0.service";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface RegisterFormType {
 	password: string;
@@ -12,6 +12,7 @@ interface RegisterFormType {
 
 const Register: React.FC = () => {
 	const [formState, setFormState] = useState<RegisterFormType>({ email: "", password: "" });
+	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const navigate = useNavigate();
 
 	const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,17 +47,32 @@ const Register: React.FC = () => {
 	};
 
 	return (
-		<div>
+		<div style={{ display: "flex", flexFlow: "column", width: 300, alignItems: "center", margin: "0 auto", gap: 20 }}>
 			<div>
 				<h1>Register</h1>
 				<p>Sign UP To Application</p>
 			</div>
 			<form style={{ display: "flex", flexFlow: "column", width: 300, alignItems: "center", margin: "0 auto", gap: 20 }}>
 				<input name="email" type="email" placeholder="write email" value={formState.email} onChange={changeHandler} />
-				<input name="password" type="password" placeholder="write password" value={formState.password} onChange={changeHandler} />
+				<input
+					name="password"
+					type={showPassword ? "text" : "password"}
+					placeholder="write password"
+					value={formState.password}
+					onChange={changeHandler}
+				/>
+				<button
+					onClick={(e: any) => {
+						e.preventDefault();
+						setShowPassword(!showPassword);
+					}}
+				>
+					Show
+				</button>
 				<button type="button" onClick={onSubmit}>
 					Register
 				</button>
+				<button onClick={() => navigate("/login")}>Already Have An Account?</button>
 			</form>
 		</div>
 	);
