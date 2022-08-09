@@ -1,19 +1,20 @@
 import React, { useEffect } from "react";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { auth } from "../services/auth0.service";
 import { Auth0DecodedHash, Auth0Error, Auth0ParseHashError, Auth0UserProfile } from "auth0-js";
-import { AUTH0_CLIENT_ID, AUTH0_LOGIN_RESPONSE_TYPE, AUTH0_LOGOUT_URI } from "../config";
 
 // store import
 import { useDispatch, useSelector } from "react-redux";
 
 // action creators import
-import { clearCredentials, setCredentials } from "../services/auth/authReducer";
+import { setCredentials } from "../services/auth/authReducer";
 
 const PostAuthenticate: React.FC = () => {
 	const location = useLocation();
+
+	const navigate = useNavigate();
 
 	const { user } = useSelector((state: any) => state.auth);
 	const dispatch = useDispatch();
@@ -48,20 +49,12 @@ const PostAuthenticate: React.FC = () => {
 
 							dispatch(setCredentials(result, accessToken));
 							alert("User Login Successfull");
+							navigate("/profile");
 						});
 					}
 				}
 			}
 		);
-	};
-
-	const LogoutCallback = () => {
-		dispatch(clearCredentials());
-
-		auth.logout({
-			returnTo: AUTH0_LOGOUT_URI,
-			clientID: AUTH0_CLIENT_ID,
-		});
 	};
 
 	console.log(user);
@@ -73,15 +66,7 @@ const PostAuthenticate: React.FC = () => {
 		}
 	}, [location, user]);
 
-	return (
-		<>
-			<img alt="" src={user?.picture} />
-			<h1>{user?.email}</h1>
-			<p>{user?.created_at}</p>
-			<p>{user?.nickname}</p>
-			<button onClick={LogoutCallback}>Logout</button>
-		</>
-	);
+	return <></>;
 };
 
 export default PostAuthenticate;

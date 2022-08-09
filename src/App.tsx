@@ -3,10 +3,11 @@ import React, { useEffect } from "react";
 // component import
 import PostAuthenticate from "./components/PostAuthenticate";
 import Register from "./components/Register";
+import Profile from "./components/Profile";
 import Login from "./components/Login";
 
 // router import
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 // store import
 import store from "./app/store";
@@ -23,6 +24,7 @@ const App: React.FC = () => {
 			{token ? (
 				<>
 					<Route path="" element={<Navigate to="/authenticate" />} />
+					<Route path="profile" element={<Profile />} />
 					<Route path="*" element={<div>Not Found</div>} />
 				</>
 			) : (
