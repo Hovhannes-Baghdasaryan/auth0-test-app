@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 import { auth } from "../services/auth0.service";
 import { Auth0DecodedHash, Auth0Error, Auth0ParseHashError, Auth0UserProfile } from "auth0-js";
-import { AUTH0_CLIENT_ID } from "../config";
+import { AUTH0_CLIENT_ID, AUTH0_LOGIN_RESPONSE_TYPE, AUTH0_LOGOUT_URI } from "../config";
 
 // store import
 import { useDispatch, useSelector } from "react-redux";
@@ -59,7 +59,7 @@ const PostAuthenticate: React.FC = () => {
 		dispatch(clearCredentials());
 
 		auth.logout({
-			returnTo: "http://localhost:3000/login",
+			returnTo: AUTH0_LOGOUT_URI,
 			clientID: AUTH0_CLIENT_ID,
 		});
 	};
