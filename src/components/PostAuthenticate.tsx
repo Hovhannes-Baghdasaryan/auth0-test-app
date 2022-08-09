@@ -1,12 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 import { auth } from "../services/auth0.service";
 import { Auth0DecodedHash, Auth0Error, Auth0ParseHashError, Auth0UserProfile } from "auth0-js";
+import { AUTH0_CLIENT_ID } from "../config";
 
 const PostAuthenticate: React.FC = () => {
 	const location = useLocation();
+	const [user, setUser] = useState<Auth0UserProfile>();
+
+	const token = localStorage.getItem("token");
 
 	const processHash = (hash: string) => {
 		auth.parseHash(
@@ -29,6 +33,8 @@ const PostAuthenticate: React.FC = () => {
                     */
 
 					if (accessToken) {
+						localStorage.setItem("token", accessToken);
+
 						auth.client.userInfo(accessToken, (error: Auth0Error | null, result: Auth0UserProfile) => {
 							if (error) {
 								alert("Something went wrong in fetching user profile");
@@ -38,11 +44,19 @@ const PostAuthenticate: React.FC = () => {
 
 							alert("User Login Successfull");
 							console.log(result);
+							setUser(result);
 						});
 					}
 				}
 			}
 		);
+	};
+
+	const LogoutCallback = () => {
+		auth.logout({
+			returnTo: "/login",
+			clientID: AUTH0_CLIENT_ID,
+		});
 	};
 
 	// adding dependancy for the location
@@ -52,7 +66,21 @@ const PostAuthenticate: React.FC = () => {
 		}
 	}, [location]);
 
-	return <div>Loading</div>;
+	if (!token) return <Navigate to="/login" />;
+
+	return (
+		<>
+			{token && (
+				<>
+					<img alt="" src={user?.picture} />
+					<h1>{user?.email}</h1>
+					<p>{user?.created_at}</p>
+					<p>{user?.nickname}</p>
+					<button onClick={LogoutCallback}>Logout</button>
+				</>
+			)}
+		</>
+	);
 };
 
 export default PostAuthenticate;

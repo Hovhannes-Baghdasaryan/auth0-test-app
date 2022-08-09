@@ -8,13 +8,17 @@ import Login from "./components/Login";
 // router import
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-const App: React.FC = () => (
-	<Routes>
-		<Route path="authenticate" caseSensitive={true} element={<PostAuthenticate />} />
-		<Route path="register" caseSensitive={true} element={<Register />} />
-		<Route path="login" caseSensitive={true} element={<Login />} />
-	</Routes>
-);
+const App: React.FC = () => {
+	const token = localStorage.getItem("token");
+
+	return (
+		<Routes>
+			<Route path="authenticate" caseSensitive={true} element={<PostAuthenticate />} />
+			<Route path="register" caseSensitive={true} element={<Register />} />
+			<Route path="login" caseSensitive={true} element={<Login />} />
+		</Routes>
+	);
+};
 
 const AppWrapper = () => (
 	<BrowserRouter>

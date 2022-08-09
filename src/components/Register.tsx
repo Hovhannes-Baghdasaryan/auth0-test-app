@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Auth0Error } from "auth0-js";
 import { AUTH0_REALM } from "../config";
 import { auth } from "../services/auth0.service";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface RegisterFormType {
 	password: string;
@@ -11,6 +12,7 @@ interface RegisterFormType {
 
 const Register: React.FC = () => {
 	const [formState, setFormState] = useState<RegisterFormType>({ email: "", password: "" });
+	const navigate = useNavigate();
 
 	const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormState({
@@ -38,6 +40,7 @@ const Register: React.FC = () => {
 
 				alert("Registration success");
 				console.log(result);
+				navigate("/login");
 			}
 		);
 	};
